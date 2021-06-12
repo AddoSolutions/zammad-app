@@ -22,6 +22,8 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import TicketsList from './pages/TicketsList';
+import TicketsView from './pages/TicketsView';
 
 const App: React.FC = () => {
   return (
@@ -33,6 +35,18 @@ const App: React.FC = () => {
             <Route path="/" exact={true}>
               <Redirect to="/page/Inbox" />
             </Route>
+            <Route path="/overview/:link" exact={false}   render={( location ) => {
+              // @ts-ignore
+              console.log(location);
+              // @ts-ignore
+              return <TicketsList {...location.match.params} />
+            }} />
+            <Route path="/ticket/:id" exact={false}   render={( location ) => {
+              // @ts-ignore
+              console.log(location);
+              // @ts-ignore
+              return <TicketsView {...location.match.params} />
+            }} />
             <Route path="/page/:name" exact={true}>
               <Page />
             </Route>

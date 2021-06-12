@@ -1,3 +1,6 @@
+import React, {Component} from "react";
+import ReactDOM from "react-dom";
+
 import {
   IonContent,
   IonIcon,
@@ -11,8 +14,24 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import {
+  add,
+  archiveOutline,
+  archiveSharp,
+  bookmarkOutline,
+  heartOutline,
+  heartSharp,
+  mailOutline,
+  mailSharp,
+  paperPlaneOutline,
+  paperPlaneSharp,
+  trashOutline,
+  trashSharp,
+  warningOutline,
+  warningSharp
+} from 'ionicons/icons';
 import './Menu.css';
+import api from "../api";
 
 interface AppPage {
   url: string;
@@ -23,78 +42,81 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   {
-    title: 'Inbox',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
+    title: 'New Ticket',
+    url: '/page/new',
+    iosIcon: add,
     mdIcon: mailSharp
   },
-  {
-    title: 'Outbox',
-    url: '/page/Outbox',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
-  },
-  {
-    title: 'Favorites',
-    url: '/page/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
-  },
-  {
-    title: 'Archived',
-    url: '/page/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
-  },
-  {
-    title: 'Trash',
-    url: '/page/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
-  {
-    title: 'Spam',
-    url: '/page/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
-  }
 ];
 
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
-const Menu: React.FC = () => {
-  const location = useLocation();
+interface MenuState {
+  overviews: any[]; //replace any with suitable type
+  date: Date;
+}
 
-  return (
-    <IonMenu contentId="main" type="overlay">
-      <IonContent>
-        <IonList id="inbox-list">
-          <IonListHeader>Inbox</IonListHeader>
-          <IonNote>hi@ionicframework.com</IonNote>
-          {appPages.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
-          })}
-        </IonList>
+export default class Menu extends Component<{}, MenuState> {
 
-        <IonList id="labels-list">
-          <IonListHeader>Labels</IonListHeader>
-          {labels.map((label, index) => (
-            <IonItem lines="none" key={index}>
-              <IonIcon slot="start" icon={bookmarkOutline} />
-              <IonLabel>{label}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
-      </IonContent>
-    </IonMenu>
-  );
-};
+  constructor(props : any) {
+    super(props)
+    this.state = {
+      date: new Date(),
+      overviews: []
+    }
+  }
 
-export default Menu;
+  async reloadList() {
+
+    let overviews = (await api.getOverviews()).data
+    console.log(overviews);
+    this.setState({overviews});
+  }
+
+  async componentDidMount() {
+    await this.reloadList();
+
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  render() {
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+
+
+    return (
+        <IonMenu contentId="main" type="overlay">
+          <IonContent>
+            <IonList id="inbox-list">
+              <IonListHeader>Inbox</IonListHeader>
+              <IonNote>hi@ionicframework.com</IonNote>
+              {appPages.map((appPage, index) => {
+                return (
+                    <IonMenuToggle key={index} autoHide={false}>
+                      <IonItem routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                        <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                        <IonLabel>{appPage.title}</IonLabel>
+                      </IonItem>
+                    </IonMenuToggle>
+                );
+              })}
+            </IonList>
+
+            <IonList id="labels-list">
+              <IonListHeader>Labels</IonListHeader>
+              {this.state.overviews.map((overview: any) => (
+                  <IonItem routerLink={"/overview/"+overview.link} lines="none" key={overview.link}>
+                    <IonIcon slot="start" icon={bookmarkOutline} />
+                    <IonLabel>{overview.name}</IonLabel>
+                  </IonItem>
+              ))}
+            </IonList>
+          </IonContent>
+        </IonMenu>
+    );
+  }
+}
+
+

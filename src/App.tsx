@@ -43,6 +43,7 @@ const App: React.FC = () => {
             }} />
             <Route path="/ticket/:id" exact={false}   render={( location ) => {
               // @ts-ignore
+
               console.log(location);
               // @ts-ignore
               return <TicketsView {...location.match.params} />

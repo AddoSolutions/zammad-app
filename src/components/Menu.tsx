@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
+import { menuController } from "@ionic/core";
+
 
 import {
   IonContent,
@@ -107,7 +109,7 @@ export default class Menu extends Component<{}, MenuState> {
             <IonList id="labels-list">
               <IonListHeader>Labels</IonListHeader>
               {this.state.overviews.map((overview: any) => (
-                  <IonItem routerLink={"/overview/"+overview.link} lines="none" key={overview.link}>
+                  <IonItem routerLink={"/overview/"+overview.link} onClick={()=>menuController.close()} lines="none" key={overview.link}>
                     <IonIcon slot="start" icon={bookmarkOutline} />
                     <IonLabel>{overview.name}</IonLabel>
                   </IonItem>

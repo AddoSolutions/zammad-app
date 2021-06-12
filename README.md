@@ -31,7 +31,7 @@ Status (and order of priorities):
 
 - [X] List and view ticket overviews
 - [X] List and view overview tickets
-- [ ] View Ticket Info
+- [X] View Ticket Replies
 - [ ] Reply to Tickets
 - [ ] Create new ticket
 - [ ] App Notifications

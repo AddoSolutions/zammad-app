@@ -57,7 +57,10 @@ export default class Menu extends Component<Props, MenuState> {
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<MenuState>, snapshot?: any) {
-        if(prevProps.id !== this.props.id) this.reloadList();
+        if(prevProps.id !== this.props.id){
+            this.setState({data:null});
+            this.reloadList();
+        }
     }
 
     componentWillUnmount() {
@@ -70,7 +73,10 @@ export default class Menu extends Component<Props, MenuState> {
 
 
         let data = this.state.data;
-        if(!data) return (<div>Loading</div>);
+        if(!data || !data.assets.Ticket[this.props.id]) return (<div>Loading</div>);
+
+
+        let ticket = data.assets.Ticket[this.props.id];
         // @ts-ignore
         return (
 
@@ -81,29 +87,28 @@ export default class Menu extends Component<Props, MenuState> {
                         <IonButtons slot="start">
                             <IonMenuButton />
                         </IonButtons>
-                        <IonTitle>{data.index.overview.name}</IonTitle>
+                        <IonTitle>{ticket.title}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
                 <IonContent>
 
-                    {data.index.tickets.map((ticketRef : any)=>{
+                    {data.ticket_article_ids.map((ticketRef : any)=>{
 
-                        let ticket = data.assets.Ticket[ticketRef.id]
-                        ticket.customer = ticket.customer_id ? data.assets.User[ticket.customer_id] : {}
-                        ticket.organization = ticket.customer.organization_id ? data.assets.Organization[ticket.customer.organization_id] : {}
+                        let article = data.assets.TicketArticle[ticketRef]
+                        article.created_by = article.created_by_id ? data.assets.User[article.created_by_id] : {}
+                        article.organization = article.created_by.organization_id ? data.assets.Organization[article.created_by.organization_id] : {}
 
                         return (
 
-                        <IonCard key={ticket.id}>
+                        <IonCard key={article.id}>
                             <IonCardHeader>
-                                <IonCardSubtitle>{ticket.customer.firstname} {ticket.customer.lastname} @ {ticket.organization.name}</IonCardSubtitle>
-                                <IonCardTitle>{ticket.title}</IonCardTitle>
+                                <IonCardSubtitle>{article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</IonCardSubtitle>
+                                <IonCardTitle>{ticket.subject}</IonCardTitle>
                             </IonCardHeader>
 
-                            {/* <IonCardContent>
-                                Keep close to Nature's heart... and break clear away, once in awhile,
-                                and climb a mountain or spend a week in the woods. Wash your spirit clean.
-                            </IonCardContent> */}
+                            <IonCardContent >
+                                <div dangerouslySetInnerHTML={{__html:article.body}} />
+                            </IonCardContent>
                         </IonCard>
                     )
                     })}

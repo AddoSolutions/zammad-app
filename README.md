@@ -32,7 +32,8 @@ Status (and order of priorities):
 - [X] List and view ticket overviews
 - [X] List and view overview tickets
 - [X] View Ticket Replies
-- [ ] Reply to Tickets
+- [X] Reply to Tickets
+    - [X] Account Time
 - [ ] Create new ticket
 - [ ] App Notifications
 - [ ] Update Ticket Meta

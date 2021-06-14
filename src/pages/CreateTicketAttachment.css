@@ -1,0 +1,9 @@
+.ck-rounded-corners, .ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-toolbar, .ck.ck-editor__top .ck-sticky-panel .ck-toolbar.ck-rounded-corners{
+    border-radius:0;
+    border:none !important;
+
+}
+
+.ck-editor.ck-rounded-corners{
+    border-bottom:1px solid rgba(0,0,0,0.15) !important;
+}

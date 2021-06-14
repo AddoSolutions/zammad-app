@@ -25,6 +25,7 @@ import {
 } from '@ionic/react';
 
 import api from "../api";
+import CreateTicketAttachment from "./CreateTicketAttachment";
 
 interface MenuState {
     data: any;
@@ -67,10 +68,27 @@ export default class Menu extends Component<Props, MenuState> {
 
     }
 
+    getReplyToAddress(){
+        let data = this.state.data;
+        let customerId=data.assets.Ticket[this.props.id].customer_id;
+        let article = data.assets.TicketArticle[[...data.ticket_article_ids].reverse().find(ticketRef=>{
+            let article = data.assets.TicketArticle[ticketRef]
+            if(article.created_by_id===customerId) return true;
+        })]
+
+        if(article && article.created_by===customerId) return article.from;
+        return data.assets.User[customerId].email || data.assets.User[customerId].mobile;
+    }
+
+    handleNewReply(article: any){
+        this.state.data.ticket_article_ids.push(article.id);
+        this.state.data.assets.TicketArticle[article.id] = article;
+        this.setState({data: this.state.data});
+    }
+
     render() {
 
         // eslint-disable-next-line react-hooks/rules-of-hooks
-
 
         let data = this.state.data;
         if(!data || !data.assets.Ticket[this.props.id]) return (<div>Loading</div>);
@@ -102,7 +120,7 @@ export default class Menu extends Component<Props, MenuState> {
 
                         <IonCard key={article.id}>
                             <IonCardHeader>
-                                <IonCardSubtitle>{article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</IonCardSubtitle>
+                                <IonCardSubtitle>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</IonCardSubtitle>
                                 <IonCardTitle>{ticket.subject}</IonCardTitle>
                             </IonCardHeader>
 
@@ -112,6 +130,8 @@ export default class Menu extends Component<Props, MenuState> {
                         </IonCard>
                     )
                     })}
+
+                    <CreateTicketAttachment to={this.getReplyToAddress()} typeId={data.assets.TicketArticle[data.ticket_article_ids[0]].type_id} ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)} />
 
                 </IonContent>
             </IonPage>

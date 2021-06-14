@@ -23,6 +23,7 @@ Status (and order of priorities):
 - [X] View Ticket Replies
 - [X] Reply to Tickets
     - [X] Account Time
+    - [ ] Set Ticket State
 - [ ] Create new ticket
 - [ ] App Notifications
 - [ ] Update Ticket Meta

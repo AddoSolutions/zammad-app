@@ -124,7 +124,9 @@ export default class Menu extends Component<Props, MenuState> {
                                 <IonLabel>
                                     <h2>{ticket.subject}</h2>
                                     <h3>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</h3>
-                                    <p dangerouslySetInnerHTML={{__html:article.body}} />
+                                    {/*
+                                    //@ts-ignore */}
+                                    <p style={{"white-space":"normal"}} dangerouslySetInnerHTML={{__html:article.body}} />
                                 </IonLabel>
 
 

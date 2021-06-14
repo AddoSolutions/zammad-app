@@ -25,6 +25,7 @@ import {
 } from '@ionic/react';
 
 import api from "../api";
+import Loading from "../Loading";
 
 interface MenuState {
     overviewData: any;
@@ -70,7 +71,7 @@ export default class Menu extends Component<Props, MenuState> {
 
 
         let data = this.state.overviewData;
-        if(!data) return (<div>Loading</div>);
+        if(!data) return (<Loading />)
         // @ts-ignore
         return (
 

@@ -26,6 +26,7 @@ import {
 
 import api from "../api";
 import CreateTicketAttachment from "./CreateTicketAttachment";
+import Loading from "../Loading";
 
 interface MenuState {
     data: any;
@@ -91,7 +92,7 @@ export default class Menu extends Component<Props, MenuState> {
         // eslint-disable-next-line react-hooks/rules-of-hooks
 
         let data = this.state.data;
-        if(!data || !data.assets.Ticket[this.props.id]) return (<div>Loading</div>);
+        if(!data || !data.assets.Ticket[this.props.id]) return  (<Loading />)
 
 
         let ticket = data.assets.Ticket[this.props.id];

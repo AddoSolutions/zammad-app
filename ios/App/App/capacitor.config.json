@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "mobile-app",
+	"appId": "com.addosolutions.zammad-app",
+	"appName": "zammad-app",
 	"webDir": "build",
 	"bundledWebRuntime": false
 }

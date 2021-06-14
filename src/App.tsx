@@ -28,6 +28,7 @@ import Login from './Login';
 import storage from "./storage";
 import {Component} from "react";
 import api, {configureApi} from "./api";
+import Loading from "./Loading";
 
 interface StateInterface{
     loaded: boolean;
@@ -65,6 +66,8 @@ export default class App extends Component<{}, StateInterface> {
 
 
     render() {
+        if (!this.state.loaded)
+            return (<Loading />)
         if (!this.state.loggedIn)
             return (<Login/>)
 

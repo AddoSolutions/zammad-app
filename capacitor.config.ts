@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'mobile-app',
+  appId: 'com.addosolutions.zammad-app',
+  appName: 'zammad-app',
   webDir: 'build',
   bundledWebRuntime: false
 };

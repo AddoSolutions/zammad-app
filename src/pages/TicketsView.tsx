@@ -108,7 +108,7 @@ export default class Menu extends Component<Props, MenuState> {
                         <IonTitle>{ticket.title}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonContent>
+                <IonList>
 
                     {data.ticket_article_ids.map((ticketRef : any)=>{
 
@@ -118,22 +118,21 @@ export default class Menu extends Component<Props, MenuState> {
 
                         return (
 
-                        <IonCard key={article.id}>
-                            <IonCardHeader>
-                                <IonCardSubtitle>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</IonCardSubtitle>
-                                <IonCardTitle>{ticket.subject}</IonCardTitle>
-                            </IonCardHeader>
+                        <IonItem key={article.id}>
+                            <IonLabel>
+                                <h2>{ticket.subject}</h2>
+                                <h3>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</h3>
+                                <p dangerouslySetInnerHTML={{__html:article.body}} />
+                            </IonLabel>
 
-                            <IonCardContent >
-                                <div dangerouslySetInnerHTML={{__html:article.body}} />
-                            </IonCardContent>
-                        </IonCard>
+
+                        </IonItem>
                     )
                     })}
 
                     <CreateTicketAttachment to={this.getReplyToAddress()} typeId={data.assets.TicketArticle[data.ticket_article_ids[0]].type_id} ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)} />
 
-                </IonContent>
+                </IonList>
             </IonPage>
 
         );

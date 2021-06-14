@@ -84,7 +84,7 @@ export default class Menu extends Component<Props, MenuState> {
                         <IonTitle>{data.index.overview.name}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonContent>
+                <IonList>
 
                     {data.index.tickets.map((ticketRef : any)=>{
 
@@ -94,21 +94,21 @@ export default class Menu extends Component<Props, MenuState> {
 
                         return (
 
-                        <IonCard key={ticket.id} routerLink={"/ticket/"+ticket.id}>
-                            <IonCardHeader>
-                                <IonCardSubtitle>{ticket.customer.firstname} {ticket.customer.lastname} @ {ticket.organization.name}</IonCardSubtitle>
-                                <IonCardTitle>{ticket.title}</IonCardTitle>
-                            </IonCardHeader>
-
+                        <IonItem key={ticket.id} routerLink={"/ticket/"+ticket.id}>
+                            <IonLabel>
+                                <h2>{ticket.title}</h2>
+                                <p>{ticket.customer.firstname} {ticket.customer.lastname} @ {ticket.organization.name}</p>
+                            </IonLabel>
+                            <IonNote slot={"end"}>{ticket.article_count}</IonNote>
                             {/* <IonCardContent>
                                 Keep close to Nature's heart... and break clear away, once in awhile,
                                 and climb a mountain or spend a week in the woods. Wash your spirit clean.
                             </IonCardContent> */}
-                        </IonCard>
+                        </IonItem>
                     )
                     })}
 
-                </IonContent>
+                </IonList>
             </IonPage>
 
         );

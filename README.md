@@ -2,18 +2,7 @@
 
 This is a very (very) basic mobile app for Zammad.  It's based on Ionic Framework / React.
 
-This is made of of annoyance of my inability to control things easily from my phone.  It's ugly
-
-It requires to start that you create the following file to use it
-
-
-```typescript
-export default {
-    url: "https://your.instance.com",
-    apikey: "5hJeXX-eXawc5XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXu"
-}
-```
-
+This is made out of annoyance of my inability to control things easily from my phone.  It's ugly code, feel free to make it pretty
 
 You also need to add the following headers to allow CORS (the below example is for Apache):
 
@@ -38,7 +27,7 @@ Status (and order of priorities):
 - [ ] App Notifications
 - [ ] Update Ticket Meta
 - [ ] Control which fields are displayed per view (based on Zammad config)
-- [ ] Generic login
+- [X] Generic login
 - [ ] Publish app
 
 If I have to write the whole thing myself I will put it for sale on app store (always open source, just precompiled "easy" version on app store is paid). 

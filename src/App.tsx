@@ -1,6 +1,6 @@
-import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import {IonApp, IonRouterOutlet, IonSplitPane} from '@ionic/react';
+import {IonReactRouter} from '@ionic/react-router';
+import {Redirect, Route} from 'react-router-dom';
 import Menu from './components/Menu';
 import Page from './pages/Page';
 
@@ -24,38 +24,73 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import TicketsList from './pages/TicketsList';
 import TicketsView from './pages/TicketsView';
+import Login from './Login';
+import storage from "./storage";
+import {Component} from "react";
+import api, {configureApi} from "./api";
 
-const App: React.FC = () => {
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonRouterOutlet id="main">
-            <Route path="/" exact={true}>
-              <Redirect to="/page/Inbox" />
-            </Route>
-            <Route path="/overview/:link" exact={false}   render={( location ) => {
-              // @ts-ignore
-              console.log(location);
-              // @ts-ignore
-              return <TicketsList {...location.match.params} />
-            }} />
-            <Route path="/ticket/:id" exact={false}   render={( location ) => {
-              // @ts-ignore
+interface StateInterface{
+    loaded: boolean;
+    loggedIn: boolean;
+}
 
-              console.log(location);
-              // @ts-ignore
-              return <TicketsView {...location.match.params} />
-            }} />
-            <Route path="/page/:name" exact={true}>
-              <Page />
-            </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactRouter>
-    </IonApp>
-  );
+export default class App extends Component<{}, StateInterface> {
+
+    constructor(props : any) {
+        super(props);
+
+        this.state = {
+            loaded:false,
+            loggedIn:false
+        }
+    }
+
+    componentDidMount() {
+        this.startLogin();
+    }
+
+    async startLogin(){
+        let apiKey =  await storage.get('apikey');
+        if(!apiKey) this.setState({loaded: true, loggedIn: false})
+        await configureApi();
+        let me = api.getMe();
+        if(!apiKey) this.setState({loaded: true, loggedIn: true})
+    }
+
+
+    render() {
+        if (!this.state.loggedIn)
+            return (<Login/>)
+
+        return (
+            <IonApp>
+                <IonReactRouter>
+                    <IonSplitPane contentId="main">
+                        <Menu/>
+                        <IonRouterOutlet id="main">
+                            <Route path="/" exact={true}>
+                                <Redirect to="/page/Inbox"/>
+                            </Route>
+                            <Route path="/overview/:link" exact={false} render={(location) => {
+                                // @ts-ignore
+                                console.log(location);
+                                // @ts-ignore
+                                return <TicketsList {...location.match.params} />
+                            }}/>
+                            <Route path="/ticket/:id" exact={false} render={(location) => {
+                                // @ts-ignore
+
+                                console.log(location);
+                                // @ts-ignore
+                                return <TicketsView {...location.match.params} />
+                            }}/>
+                            <Route path="/page/:name" exact={true}>
+                                <Page/>
+                            </Route>
+                        </IonRouterOutlet>
+                    </IonSplitPane>
+                </IonReactRouter>
+            </IonApp>
+        );
+    }
 };
-
-export default App;

@@ -1,13 +1,14 @@
 import axios from 'axios';
-import env from './env'
+import storage from "./storage";
 //import { HTTP } from '@ionic-native/http';
 
 export let api = axios.create({
-    baseURL: env.url + "/api/v1/",
-    headers: {
-        "Authorization": "Token token=" + env.apikey
-    }
 })
+
+export let configureApi = async ()=>{
+    api.defaults.baseURL = await storage.get("url") + "/api/v1/"
+    api.defaults.headers["Authorization"] = "Token token=" + atob(await storage.get("token"))
+}
 
 api.interceptors.response.use(
     (response) => {
@@ -16,6 +17,7 @@ api.interceptors.response.use(
     },
     (error) => {
         console.error(error);
+        throw error;
         return Promise.reject({...error})
     }
 )
@@ -36,7 +38,7 @@ api.interceptors.response.use(
 class API {
 
     constructor(){
-        this.getMe()
+        //this.getMe()
     }
 
     getMe(){
@@ -79,6 +81,18 @@ class API {
         return api.post("ticket_articles", article)
     }
 
+
+    getApiTokens() {
+        return api.get("user_access_token")
+    }
+
+    createApiToken(data : {
+        "label": string,
+        "permission": [string],
+        "expires_at"?: string
+    }) {
+        return api.post("user_access_token", data)
+    }
 
 }
 

@@ -17,12 +17,12 @@ import {
 
 import { useLocation } from 'react-router-dom';
 import {
-  add,
+  add, addOutline,
   archiveOutline,
   archiveSharp,
   bookmarkOutline,
   heartOutline,
-  heartSharp,
+  heartSharp, listOutline,
   mailOutline,
   mailSharp,
   paperPlaneOutline,
@@ -47,7 +47,7 @@ const appPages: AppPage[] = [
     title: 'New Ticket',
     url: '/page/new',
     iosIcon: add,
-    mdIcon: mailSharp
+    mdIcon: add
   },
 ];
 
@@ -92,8 +92,12 @@ export default class Menu extends Component<{}, MenuState> {
         <IonMenu contentId="main" type="overlay">
           <IonContent>
             <IonList id="inbox-list">
-              <IonListHeader>Inbox</IonListHeader>
-              <IonNote>hi@ionicframework.com</IonNote>
+              {/*
+              //@ts-ignore */}
+              <IonListHeader>{api.getMe().firstname} {api.getMe().lastname}</IonListHeader>
+              {/*
+              //@ts-ignore */}
+              <IonNote>{api.getMe().email}</IonNote>
               {appPages.map((appPage, index) => {
                 return (
                     <IonMenuToggle key={index} autoHide={false}>
@@ -110,7 +114,7 @@ export default class Menu extends Component<{}, MenuState> {
               <IonListHeader>Labels</IonListHeader>
               {this.state.overviews.map((overview: any) => (
                   <IonItem routerLink={"/overview/"+overview.link} onClick={()=>menuController.close()} lines="none" key={overview.link}>
-                    <IonIcon slot="start" icon={bookmarkOutline} />
+                    <IonIcon slot="start" icon={listOutline} />
                     <IonLabel>{overview.name}</IonLabel>
                   </IonItem>
               ))}

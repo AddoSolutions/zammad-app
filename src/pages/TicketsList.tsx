@@ -85,6 +85,7 @@ export default class Menu extends Component<Props, MenuState> {
                         <IonTitle>{data.index.overview.name}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
+                <IonContent>
                 <IonList>
 
                     {data.index.tickets.map((ticketRef : any)=>{
@@ -110,6 +111,7 @@ export default class Menu extends Component<Props, MenuState> {
                     })}
 
                 </IonList>
+                </IonContent>
             </IonPage>
 
         );

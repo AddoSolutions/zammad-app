@@ -109,31 +109,33 @@ export default class Menu extends Component<Props, MenuState> {
                         <IonTitle>{ticket.title}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonList>
+                <IonContent>
+                    <IonList>
 
-                    {data.ticket_article_ids.map((ticketRef : any)=>{
+                        {data.ticket_article_ids.map((ticketRef : any)=>{
 
-                        let article = data.assets.TicketArticle[ticketRef]
-                        article.created_by = article.created_by_id ? data.assets.User[article.created_by_id] : {}
-                        article.organization = article.created_by.organization_id ? data.assets.Organization[article.created_by.organization_id] : {}
+                            let article = data.assets.TicketArticle[ticketRef]
+                            article.created_by = article.created_by_id ? data.assets.User[article.created_by_id] : {}
+                            article.organization = article.created_by.organization_id ? data.assets.Organization[article.created_by.organization_id] : {}
 
-                        return (
+                            return (
 
-                        <IonItem key={article.id}>
-                            <IonLabel>
-                                <h2>{ticket.subject}</h2>
-                                <h3>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</h3>
-                                <p dangerouslySetInnerHTML={{__html:article.body}} />
-                            </IonLabel>
+                            <IonItem key={article.id}>
+                                <IonLabel>
+                                    <h2>{ticket.subject}</h2>
+                                    <h3>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</h3>
+                                    <p dangerouslySetInnerHTML={{__html:article.body}} />
+                                </IonLabel>
 
 
-                        </IonItem>
-                    )
-                    })}
+                            </IonItem>
+                        )
+                        })}
 
-                    <CreateTicketAttachment to={this.getReplyToAddress()} typeId={data.assets.TicketArticle[data.ticket_article_ids[0]].type_id} ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)} />
+                        <CreateTicketAttachment to={this.getReplyToAddress()} typeId={data.assets.TicketArticle[data.ticket_article_ids[0]].type_id} ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)} />
 
-                </IonList>
+                    </IonList>
+                </IonContent>
             </IonPage>
 
         );

@@ -32,6 +32,7 @@ import api, {configureApi} from "./api";
 interface StateInterface{
     loaded: boolean;
     loggedIn: boolean;
+    error?: Error
 }
 
 export default class App extends Component<{}, StateInterface> {
@@ -50,11 +51,16 @@ export default class App extends Component<{}, StateInterface> {
     }
 
     async startLogin(){
-        let apiKey =  await storage.get('apikey');
-        if(!apiKey) this.setState({loaded: true, loggedIn: false})
-        await configureApi();
-        let me = api.getMe();
-        if(!apiKey) this.setState({loaded: true, loggedIn: true})
+        let apiKey =  await storage.get('token');
+        console.log(apiKey);
+        if(!apiKey) return this.setState({loaded: true, loggedIn: false})
+        try {
+            await configureApi();
+            let me = (await api.getMe()).data;
+            this.setState({loaded: true, loggedIn: true})
+        }catch(e){
+            this.setState({loaded: true, loggedIn: false, error: e})
+        }
     }
 
 

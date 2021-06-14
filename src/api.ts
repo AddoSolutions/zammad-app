@@ -42,8 +42,9 @@ class API {
     }
 
     getMe(){
-        let me = api.get("users/me").then(res=>{
+        return api.get("users/me").then(res=>{
             this.getMe = ()=>res.data;
+            return res
         });
     }
 

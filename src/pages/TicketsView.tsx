@@ -101,11 +101,13 @@ export default class Menu extends Component<Props, MenuState> {
         if(!stateOptions.length){
             api.getStates().then(res=>stateOptions=res.data);
         }
+        if(!this.state.data) return [];
 
         return stateOptions.map(state=>{
             return {
                 text: state.name,
-                role: 'destructive',
+                role: state.id===this.state.data.assets.Ticket[this.props.id].state_id?"destructive":"",
+                disabled: true,
                 handler: () => this.setTicketState(state.id)
             }
         })

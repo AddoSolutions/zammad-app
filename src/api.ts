@@ -63,6 +63,10 @@ class API {
         return api.get("tickets")
     }
 
+    updateTicket(data: any) {
+        return api.put("tickets/"+data.id, data)
+    }
+
     getTicket(id: number) {
         return api.get("tickets/" + id + "?all=true")
     }
@@ -94,6 +98,12 @@ class API {
     }) {
         return api.post("user_access_token", data)
     }
+
+    getStates(){
+        return api.get("ticket_states")
+    }
+
+
 
 }
 

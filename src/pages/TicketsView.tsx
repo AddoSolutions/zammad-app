@@ -21,22 +21,26 @@ import {
     IonCardTitle,
     IonCardContent,
     IonButton,
-    IonButtons, IonMenuButton, IonRefresher, IonRefresherContent
+    IonButtons, IonMenuButton, IonRefresher, IonRefresherContent, useIonActionSheet, IonActionSheet
 } from '@ionic/react';
 
 import api from "../api";
 import CreateTicketAttachment from "./CreateTicketAttachment";
 import Loading from "../Loading";
 import {RefresherEventDetail} from '@ionic/core';
+import { appsOutline } from "ionicons/icons";
 
 interface MenuState {
     data: any;
     date: Date;
+    showStateChange: boolean
 }
 
 interface Props {
     id: number
 }
+
+let stateOptions : Array<any> = [];
 
 export default class Menu extends Component<Props, MenuState> {
 
@@ -44,7 +48,8 @@ export default class Menu extends Component<Props, MenuState> {
         super(props)
         this.state = {
             date: new Date(),
-            data: null
+            data: null,
+            showStateChange: false
         }
     }
 
@@ -56,6 +61,7 @@ export default class Menu extends Component<Props, MenuState> {
     }
 
     async componentDidMount() {
+        this.getStateOptions();
         await this.reloadList();
 
     }
@@ -89,12 +95,37 @@ export default class Menu extends Component<Props, MenuState> {
         this.setState({data: this.state.data});
     }
 
+    getStateOptions(){
+        if(!stateOptions.length){
+            api.getStates().then(res=>stateOptions=res.data);
+        }
+
+        return stateOptions.map(state=>{
+            return {
+                text: state.name,
+                role: 'destructive',
+                handler: () => this.setTicketState(state.id)
+            }
+        })
+    }
+
+    async setTicketState(stateId: number){
+        await api.updateTicket({
+            id:this.props.id,
+            state_id: stateId
+        });
+
+        await this.reloadList();
+    }
+
     render() {
 
         // eslint-disable-next-line react-hooks/rules-of-hooks
 
         let data = this.state.data;
         if (!data || !data.assets.Ticket[this.props.id]) return (<Loading/>)
+
+
 
 
         let ticket = data.assets.Ticket[this.props.id];
@@ -109,6 +140,11 @@ export default class Menu extends Component<Props, MenuState> {
                             <IonMenuButton/>
                         </IonButtons>
                         <IonTitle>{ticket.title}</IonTitle>
+                        <IonButtons slot="end">
+                            <IonButton onClick={()=>this.setState({showStateChange: true})}>
+                                <IonIcon slot="end" icon={appsOutline} />
+                            </IonButton>
+                        </IonButtons>
                     </IonToolbar>
                 </IonHeader>
                 <IonContent style={{"padding-top": "60px"}}>
@@ -148,6 +184,14 @@ export default class Menu extends Component<Props, MenuState> {
                                                 ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)}/>
 
                     </IonList>
+
+                    <IonActionSheet
+                        isOpen={this.state.showStateChange}
+                        onDidDismiss={() => this.setState({showStateChange:false})}
+                        cssClass='my-custom-class'
+                        buttons={this.getStateOptions()}
+                    >
+                    </IonActionSheet>
                 </IonContent>
             </IonPage>
 

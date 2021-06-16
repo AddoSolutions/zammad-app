@@ -21,23 +21,25 @@ import {
     IonCardTitle,
     IonCardContent,
     IonButton,
-    IonButtons, IonMenuButton
+    IonButtons, IonMenuButton, IonRefresher, IonRefresherContent
 } from '@ionic/react';
 
 import api from "../api";
 import Loading from "../Loading";
+import {RefresherEventDetail} from "@ionic/core";
 
 interface MenuState {
     overviewData: any;
     date: Date;
 }
+
 interface Props {
     link: string
 }
 
 export default class Menu extends Component<Props, MenuState> {
 
-    constructor(props : any) {
+    constructor(props: any) {
         super(props)
         this.state = {
             date: new Date(),
@@ -58,7 +60,7 @@ export default class Menu extends Component<Props, MenuState> {
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<MenuState>, snapshot?: any) {
-        if(prevProps.link !== this.props.link) this.reloadList();
+        if (prevProps.link !== this.props.link) this.reloadList();
     }
 
     componentWillUnmount() {
@@ -71,7 +73,7 @@ export default class Menu extends Component<Props, MenuState> {
 
 
         let data = this.state.overviewData;
-        if(!data) return (<Loading />)
+        if (!data) return (<Loading/>)
         // @ts-ignore
         return (
 
@@ -80,37 +82,42 @@ export default class Menu extends Component<Props, MenuState> {
                     <IonToolbar>
 
                         <IonButtons slot="start">
-                            <IonMenuButton />
+                            <IonMenuButton/>
                         </IonButtons>
                         <IonTitle>{data.index.overview.name}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
+
                 <IonContent>
-                <IonList>
+                    <IonRefresher slot={"fixed"} onIonRefresh={(e) => this.reloadList().then(d => e.detail.complete())}>
+                        <IonRefresherContent></IonRefresherContent>
+                    </IonRefresher>
+                    <IonList>
 
-                    {data.index.tickets.map((ticketRef : any)=>{
+                        {data.index.tickets.map((ticketRef: any) => {
 
-                        let ticket = data.assets.Ticket[ticketRef.id]
-                        ticket.customer = ticket.customer_id ? data.assets.User[ticket.customer_id] : {}
-                        ticket.organization = ticket.customer.organization_id ? data.assets.Organization[ticket.customer.organization_id] : {}
+                            let ticket = data.assets.Ticket[ticketRef.id]
+                            ticket.customer = ticket.customer_id ? data.assets.User[ticket.customer_id] : {}
+                            ticket.organization = ticket.customer.organization_id ? data.assets.Organization[ticket.customer.organization_id] : {}
 
-                        return (
+                            return (
 
-                        <IonItem key={ticket.id} routerLink={"/ticket/"+ticket.id}>
-                            <IonLabel>
-                                <h2>{ticket.title}</h2>
-                                <p>{ticket.customer.firstname} {ticket.customer.lastname} @ {ticket.organization.name}</p>
-                            </IonLabel>
-                            <IonNote slot={"end"}>{ticket.article_count}</IonNote>
-                            {/* <IonCardContent>
+                                <IonItem key={ticket.id} routerLink={"/ticket/" + ticket.id}>
+                                    <IonLabel>
+                                        <h2>{ticket.title}</h2>
+                                        <p>{ticket.customer.firstname} {ticket.customer.lastname} @ {ticket.organization.name}</p>
+                                    </IonLabel>
+                                    <IonNote slot={"end"}>{ticket.article_count}</IonNote>
+                                    {/* <IonCardContent>
                                 Keep close to Nature's heart... and break clear away, once in awhile,
                                 and climb a mountain or spend a week in the woods. Wash your spirit clean.
                             </IonCardContent> */}
-                        </IonItem>
-                    )
-                    })}
+                                </IonItem>
+                            )
+                        })}
 
-                </IonList>
+                    </IonList>
+
                 </IonContent>
             </IonPage>
 

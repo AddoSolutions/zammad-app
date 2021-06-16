@@ -21,24 +21,26 @@ import {
     IonCardTitle,
     IonCardContent,
     IonButton,
-    IonButtons, IonMenuButton
+    IonButtons, IonMenuButton, IonRefresher, IonRefresherContent
 } from '@ionic/react';
 
 import api from "../api";
 import CreateTicketAttachment from "./CreateTicketAttachment";
 import Loading from "../Loading";
+import {RefresherEventDetail} from '@ionic/core';
 
 interface MenuState {
     data: any;
     date: Date;
 }
+
 interface Props {
     id: number
 }
 
 export default class Menu extends Component<Props, MenuState> {
 
-    constructor(props : any) {
+    constructor(props: any) {
         super(props)
         this.state = {
             date: new Date(),
@@ -59,8 +61,8 @@ export default class Menu extends Component<Props, MenuState> {
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<MenuState>, snapshot?: any) {
-        if(prevProps.id !== this.props.id){
-            this.setState({data:null});
+        if (prevProps.id !== this.props.id) {
+            this.setState({data: null});
             this.reloadList();
         }
     }
@@ -69,19 +71,19 @@ export default class Menu extends Component<Props, MenuState> {
 
     }
 
-    getReplyToAddress(){
+    getReplyToAddress() {
         let data = this.state.data;
-        let customerId=data.assets.Ticket[this.props.id].customer_id;
-        let article = data.assets.TicketArticle[[...data.ticket_article_ids].reverse().find(ticketRef=>{
+        let customerId = data.assets.Ticket[this.props.id].customer_id;
+        let article = data.assets.TicketArticle[[...data.ticket_article_ids].reverse().find(ticketRef => {
             let article = data.assets.TicketArticle[ticketRef]
-            if(article.created_by_id===customerId) return true;
+            if (article.created_by_id === customerId) return true;
         })]
 
-        if(article && article.created_by===customerId) return article.from;
+        if (article && article.created_by === customerId) return article.from;
         return data.assets.User[customerId].email || data.assets.User[customerId].mobile;
     }
 
-    handleNewReply(article: any){
+    handleNewReply(article: any) {
         this.state.data.ticket_article_ids.push(article.id);
         this.state.data.assets.TicketArticle[article.id] = article;
         this.setState({data: this.state.data});
@@ -92,7 +94,7 @@ export default class Menu extends Component<Props, MenuState> {
         // eslint-disable-next-line react-hooks/rules-of-hooks
 
         let data = this.state.data;
-        if(!data || !data.assets.Ticket[this.props.id]) return  (<Loading />)
+        if (!data || !data.assets.Ticket[this.props.id]) return (<Loading/>)
 
 
         let ticket = data.assets.Ticket[this.props.id];
@@ -104,15 +106,20 @@ export default class Menu extends Component<Props, MenuState> {
                     <IonToolbar>
 
                         <IonButtons slot="start">
-                            <IonMenuButton />
+                            <IonMenuButton/>
                         </IonButtons>
                         <IonTitle>{ticket.title}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonContent>
+                <IonContent style={{"padding-top": "60px"}}>
+
+                    <IonRefresher slot={"fixed"} onIonRefresh={(e) => this.reloadList().then(d => e.detail.complete())}>
+                        <IonRefresherContent></IonRefresherContent>
+                    </IonRefresher>
+
                     <IonList>
 
-                        {data.ticket_article_ids.map((ticketRef : any)=>{
+                        {data.ticket_article_ids.map((ticketRef: any) => {
 
                             let article = data.assets.TicketArticle[ticketRef]
                             article.created_by = article.created_by_id ? data.assets.User[article.created_by_id] : {}
@@ -120,21 +127,25 @@ export default class Menu extends Component<Props, MenuState> {
 
                             return (
 
-                            <IonItem key={article.id}>
-                                <IonLabel>
-                                    <h2>{ticket.subject}</h2>
-                                    <h3>{article.created_by.firstname&&article.created_by.firstname.length>1?(<span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>):article.from}</h3>
-                                    {/*
-                                    //@ts-ignore */}
-                                    <p style={{"white-space":"normal"}} dangerouslySetInnerHTML={{__html:article.body}} />
-                                </IonLabel>
+                                <IonItem key={article.id}>
+                                    <IonLabel>
+                                        <h2>{ticket.subject}</h2>
+                                        <h3>{article.created_by.firstname && article.created_by.firstname.length > 1 ? (
+                                            <span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>) : article.from}</h3>
+                                        {/*
+                                            //@ts-ignore */}
+                                        <p style={{"white-space": "normal"}}
+                                           dangerouslySetInnerHTML={{__html: article.body}}/>
+                                    </IonLabel>
 
 
-                            </IonItem>
-                        )
+                                </IonItem>
+                            )
                         })}
 
-                        <CreateTicketAttachment to={this.getReplyToAddress()} typeId={data.assets.TicketArticle[data.ticket_article_ids[0]].type_id} ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)} />
+                        <CreateTicketAttachment to={this.getReplyToAddress()}
+                                                typeId={data.assets.TicketArticle[data.ticket_article_ids[0]].type_id}
+                                                ticketId={ticket.id} onSubmit={this.handleNewReply.bind(this)}/>
 
                     </IonList>
                 </IonContent>

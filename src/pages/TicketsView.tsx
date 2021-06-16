@@ -29,6 +29,8 @@ import CreateTicketAttachment from "./CreateTicketAttachment";
 import Loading from "../Loading";
 import {RefresherEventDetail} from '@ionic/core';
 import { appsOutline } from "ionicons/icons";
+import TimeAgo from 'timeago-react'
+
 
 interface MenuState {
     data: any;
@@ -165,9 +167,12 @@ export default class Menu extends Component<Props, MenuState> {
 
                                 <IonItem key={article.id}>
                                     <IonLabel>
-                                        <h2>{ticket.subject}</h2>
+                                        <p style={{"float":"right"}}><TimeAgo datetime={article.created_at} /></p>
+                                        <h2>{article.subject}</h2>
                                         <h3>{article.created_by.firstname && article.created_by.firstname.length > 1 ? (
                                             <span>{article.created_by.firstname} {article.created_by.lastname} @ {article.organization.name}</span>) : article.from}</h3>
+
+
                                         {/*
                                             //@ts-ignore */}
                                         <p style={{"white-space": "normal"}}

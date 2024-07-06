@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import { menuController } from "@ionic/core";
 
-
 import {
   IonContent,
   IonIcon,
@@ -51,7 +50,6 @@ const appPages: AppPage[] = [
   },
 ];
 
-
 interface MenuState {
   overviews: any[]; //replace any with suitable type
   date: Date;
@@ -86,7 +84,6 @@ export default class Menu extends Component<{}, MenuState> {
   render() {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-
 
     return (
         <IonMenu contentId="main" type="overlay">
@@ -124,5 +121,3 @@ export default class Menu extends Component<{}, MenuState> {
     );
   }
 }
-
-

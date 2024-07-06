@@ -2,8 +2,7 @@ import axios from 'axios';
 import storage from "./storage";
 //import { HTTP } from '@ionic-native/http';
 
-export let api = axios.create({
-})
+export let api = axios.create({})
 
 export let configureApi = async ()=>{
     api.defaults.baseURL = await storage.get("url") + "/api/v1/"
@@ -86,7 +85,6 @@ class API {
         return api.post("ticket_articles", article)
     }
 
-
     getApiTokens() {
         return api.get("user_access_token")
     }
@@ -102,11 +100,7 @@ class API {
     getStates(){
         return api.get("ticket_states")
     }
-
-
-
 }
-
 
 let apiInstance = new API();
 
